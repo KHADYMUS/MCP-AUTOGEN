@@ -1,13 +1,23 @@
 name: Upstream Sync
+
 on:
   schedule:
     - cron: '0 3 * * *'          # roda diariamente 03h UTC
   workflow_dispatch:             # botão "Run workflow"
+
 jobs:
-  sync:
-    uses: aormsby/Fork-Sync-With-Upstream-action/.github/workflows/sync.yml@v3.4.1
-    with:
-      upstream_repository: microsoft/autogen
-      upstream_branch: main
-      target_branch: main
-    secrets: inherit              # passa GITHUB_TOKEN pro workflow
+  upstream_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Sync upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_branch: main
+          upstream_sync_repo: microsoft/autogen
