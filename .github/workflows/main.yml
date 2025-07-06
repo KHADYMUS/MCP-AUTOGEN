@@ -4,7 +4,7 @@ on:
   workflow_dispatch:              # botão “Run workflow”
 jobs:
   sync:
-    uses: aormsby/Fork-Sync-With-Upstream-action/.github/workflows/sync.yml@v3
+    uses: aormsby/Fork-Sync-With-Upstream-action/.github/workflows/sync.yml@v4
     with:
       upstream_repository: microsoft/autogen   # repositório original
       upstream_branch: main
