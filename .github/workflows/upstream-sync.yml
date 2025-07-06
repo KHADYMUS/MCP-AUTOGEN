@@ -1,15 +1,36 @@
-name: Upstream Sync
+name: 'Upstream Sync'
 
 on:
   schedule:
-    - cron: '0 3 * * *'
-  workflow_dispatch:
+    - cron: '0 3 * * *'          # roda diariamente 03h UTC
+  workflow_dispatch:             # botão "Run workflow"
 
 jobs:
-  sync:
-    uses: aormsby/Fork-Sync-With-Upstream-action/.github/workflows/upstream-sync.yml@v3.4.1
-    with:
-      upstream_repository: microsoft/autogen
-      upstream_branch: main
-      target_branch: main
-    secrets: inherit
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sync latest commits from upstream repo
+    steps:
+      # Step 1: Checkout
+      - name: Checkout target repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          
+      # Step 2: Sync
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_branch: main
+          upstream_sync_repo: microsoft/autogen
+          
+      # Step 3: Mostrar resultado
+      - name: New commits found
+        if: steps.sync.outputs.has_new_commits == 'true'
+        run: echo "New commits were found to sync."
+        
+      - name: No new commits
+        if: steps.sync.outputs.has_new_commits == 'false'
+        run: echo "There were no new commits."
