@@ -1,0 +1,13 @@
+name: Upstream Sync
+on:
+  schedule:
+    - cron: '0 3 * * *'          # roda diariamente 03h UTC
+  workflow_dispatch:             # botão "Run workflow"
+jobs:
+  sync:
+    uses: aormsby/Fork-Sync-With-Upstream-action/.github/workflows/sync.yml@v3.4.1
+    with:
+      upstream_repository: microsoft/autogen
+      upstream_branch: main
+      target_branch: main
+    secrets: inherit              # passa GITHUB_TOKEN pro workflow
